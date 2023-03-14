@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css"/>  
+    <title>MZ Playground</title>
+</head>
+<body>
+    <form id="input-form">
+        <input type="search" name="search" id="searchbox" placeholder="search" onInput="searchAny()">
+        <br>
+        <input type="text" name="name1" id="name1" placeholder="name" value="">
+        <input type="text" name="phone" id="phone" placeholder="phone" value="">
+        <input type="text" name="email" id="email" placeholder="email" value="">
+
+        <input type="submit" id="add"> 
+        <button type="button" id="delete">Delete all</button> 
+    </form>   
+    <br>
+    <table id="tableList">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>name</th>
+                <th>phone</th>
+                <th>email</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+
+    <script src="script.js"></script>
+</body>
+</html>

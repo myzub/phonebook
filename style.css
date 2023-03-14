@@ -1,0 +1,29 @@
+body {
+    background-color: cadetblue;
+    margin: 40px;
+}
+#searchbox {
+    margin-bottom: 10px;
+    width: 140px;        
+}
+form {
+    width: 500px;
+    margin: auto;
+    
+}
+input {
+    margin-bottom: 10px;
+    width: 140px;
+}
+table {
+    width: 500px;
+    padding: 10px;
+    margin: auto; 
+    margin-top: 20px;
+    border-radius: 5px;
+    border: 1px solid;
+}
+td {
+    border: 1px solid;
+    border-radius: 5px;
+}
