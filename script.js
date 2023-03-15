@@ -8,39 +8,30 @@ class Contact {
       }
 }
 
-let contactArray = JSON.parse(localStorage.getItem("contacts-list"))  || "[]";
-let table = document.querySelector("#tableList tbody"); // we initialize table in  render?
+let table;
+// works that way correctly in case LS is empty
+let contactArray = JSON.parse(localStorage.getItem("contacts-list")  || "[]");
+// let contactArray = JSON.parse(localStorage.getItem("contacts-list"))   || "[]"; doesn't work
+
 
 //add
-document.querySelector("#input-form").addEventListener("submit", function (event) {
-    event.preventDefault();
-
+function addNewContact() {
     const newContact = new Contact(
         document.querySelector("#name1").value,
         document.querySelector("#phone").value,
         document.querySelector("#email").value
     );
+        contactArray.push(newContact);  
+        localStorage.setItem("contacts-list", JSON.stringify(contactArray));
 
-    contactArray.push(newContact);  
-    localStorage.setItem("contacts-list", JSON.stringify(contactArray));
-
-    const row = document.createElement("tr"),
-        cell1 = document.createElement("td"),
-        cell2 = document.createElement("td"),
-        cell3 = document.createElement("td"),
-        cell4 = document.createElement("td");
-
-    cell1.innerText = newContact.id;
-    cell2.innerText = newContact.name1;
-    cell3.innerText = newContact.phone;
-    cell4.innerText = newContact.email;
-
-    row.appendChild(cell1);
-    row.appendChild(cell2);
-    row.appendChild(cell3);
-    row.appendChild(cell4);
-    table.appendChild(row);
-});
+        table.appendChild(
+            ui.elementBuilder("tr", {id: "hey", class: "you"}, [
+                ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.id),
+                ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.name1),
+                ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.phone),
+                ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.email),
+            ]));
+};
 
 //delete all
 document.querySelector("#delete").addEventListener("click", function (event) {
@@ -65,33 +56,44 @@ function searchAny() {
 }
 
 class UI {
-    createElement (tagName, options, children) {
-        const elemet = document.createElement(tagName);
-        console.log(elemet);
-        // Object.keys, Object.entries
-        // use setAttribute in a cycle
-        // add condtion to the cihldren type. String, HTMLElement, Array<HTMLElement>
-        elemet.createAttribute(JSON.stringify(options));
-        elemet.appendChild(children);
+    elementBuilder (tagName, attributes, child) {
+        const element = document.createElement(tagName);
+        
+        for (const [key, value] of Object.entries(attributes)) {
+            element.setAttribute(key, value);
+        }
+        
+        switch (typeof child) {
+            case 'string':
+                element.appendChild(document.createTextNode(`${child}`));
+                break;
+            case 'number':
+                element.appendChild(document.createTextNode(`${child}`));
+                break;
+            case 'object':
+                child.map(subChild => element.appendChild(subChild));
+                break;
+            default:
+                break;
+        }
 
-        return elemet;
+        return element;
     }
 
     renderTable(table, contacts) {
-        table.innerHTML = contacts.map(contact => `
-            <tr>
-                <td>${contact.id}</td>
-                <td>${contact.name1}</td>
-                <td>${contact.phone}</td>
-                <td>${contact.email}</td>
-            </tr>`)
-            .join('');
+            table.innerHTML = contacts.map(contact => `
+        <tr>
+            <td>${contact.id}</td>
+            <td>${contact.name1}</td>
+            <td>${contact.phone}</td>
+            <td>${contact.email}</td>
+        </tr>`)
+        .join('');
         
-    }
+}
 }
 
 const ui = new UI();
-
 class App {
     ui;
     table;
