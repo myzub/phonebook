@@ -13,9 +13,9 @@ let table;
 let contactArray = JSON.parse(localStorage.getItem("contacts-list")  || "[]");
 // let contactArray = JSON.parse(localStorage.getItem("contacts-list"))   || "[]"; doesn't work
 
-
-//add
-function addNewContact() {
+// //add
+let add = document.getElementById("add");
+add.addEventListener("click", function () {
     const newContact = new Contact(
         document.querySelector("#name1").value,
         document.querySelector("#phone").value,
@@ -24,14 +24,17 @@ function addNewContact() {
         contactArray.push(newContact);  
         localStorage.setItem("contacts-list", JSON.stringify(contactArray));
 
-        table.appendChild(
-            ui.elementBuilder("tr", {id: "hey", class: "you"}, [
-                ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.id),
-                ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.name1),
-                ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.phone),
-                ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.email),
-            ]));
-};
+        //no sense in it, webpage reloads after submit click, renderTable performs
+        // table.appendChild(
+        //     ui.elementBuilder("tr", {id: "hey", class: "you"}, [
+        //         ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.id),
+        //         ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.name1),
+        //         ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.phone),
+        //         ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.email),
+        //         // ui.elementBuilder("td", {class: "table-cell", type: "text"}, penIcon),
+        //         // ui.elementBuilder("td", {class: "table-cell", type: "text"}, deleteIcon)
+        //     ]));
+});
 
 //delete all
 document.querySelector("#delete").addEventListener("click", function (event) {
@@ -53,6 +56,25 @@ function searchAny() {
     ui.renderTable(table, 
         (filteredArray.length === 0 && searchQuery === "" ? contactArray : filteredArray));
 
+}
+// id entity
+        // id button ="edit-btn_${contact.id}"
+        // eventtarget
+        // event = argument 
+        // event.target.id == edit-btn_${contact.id}"
+        // вирізати "eidt-btn_" and we get ${contact.id}
+
+function editContact() {
+    
+}
+
+function deleteContact(event) {
+    let img = document.getElementById();// find by "delete-btn_" ?
+    let currentContact = img.id(slice(a.indexOf("_") + 1, a.length));
+    if(confirm(`Delete ${currentContact.name1} contact?`)) {
+        //delete here
+
+    }
 }
 
 class UI {
@@ -81,19 +103,37 @@ class UI {
     }
 
     renderTable(table, contacts) {
-            table.innerHTML = contacts.map(contact => `
-        <tr>
-            <td>${contact.id}</td>
-            <td>${contact.name1}</td>
-            <td>${contact.phone}</td>
-            <td>${contact.email}</td>
-        </tr>`)
-        .join('');
+        //     table.innerHTML = contacts.map(contact => `
+        // <tr>
+        //     <td>${contact.id}</td>
+        //     <td>${contact.name1}</td>
+        //     <td>${contact.phone}</td>
+        //     <td>${contact.email}</td>
+        //     <td>
+        //         <a onclick="editContact()" href="#" id="pen-link">
+        //             <img id="edit-btn_${contact.id}" src="img/pen.png" alt="" style="height: 20px;"></img>
+        //         </a>
+        //         <a onclick="deleteContact()" href="#" id="delete-link">
+        //             <img id="delete-btn_${contact.id}" src="img/delete.png" alt="" style="height: 20px;"></img>
+        //         </a>
+        //     </td>
+        // </tr>`)
+        // .join('');
         
+        let tdList = contacts.map(newContact => {
+            ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.id),
+            ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.name1),
+            ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.phone),
+            ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.email);
+        });
+        
+        table.appendChild(ui.elementBuilder("tr", {}, tdList));
+
 }
 }
 
 const ui = new UI();
+
 class App {
     ui;
     table;

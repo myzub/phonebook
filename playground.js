@@ -1,13 +1,6 @@
 'use strict';
 
-// let arr = Array.from(Array(6).keys());
-console.log('arr :>> ', arr);
+let a = "12345_6789";
 
-function w (str) {
-    str.split("-");
-};
-
-
-
-
-console.log('arr :>> ', arr);
+let b = a.slice(a.indexOf("_")+1, a.length);
+console.log('b :>> ', b);
