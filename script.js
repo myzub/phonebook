@@ -53,16 +53,21 @@ function searchAny() {
                 item.email.includes(searchQuery)); // id comparison?
     });
 
-    ui.renderTable(table, 
-        (filteredArray.length === 0 && searchQuery === "" ? contactArray : filteredArray));
+    if (filteredArray) {
+        document.querySelector("#tableList tbody").innerHTML = "";
+        ui.renderTable(table, filteredArray);
+    } else {
+        document.querySelector("#tableList tbody").innerHTML = "";
+        ui.renderTable(table, filteredArray);
+    }
 
 }
 // id entity
-        // id button ="edit-btn_${contact.id}"
-        // eventtarget
-        // event = argument 
-        // event.target.id == edit-btn_${contact.id}"
-        // вирізати "eidt-btn_" and we get ${contact.id}
+// id button ="edit-btn_${contact.id}"
+// eventtarget
+// event = argument 
+// event.target.id == edit-btn_${contact.id}"
+// вирізати "eidt-btn_" and we get ${contact.id}
 
 function editContact() {
     
@@ -91,9 +96,15 @@ class UI {
                 break;
             case 'number':
                 element.appendChild(document.createTextNode(`${child}`));
-                break;
+                break;  
             case 'object':
-                child.map(subChild => element.appendChild(subChild));
+                child.map(subChild => {
+                    if (Array.isArray(subChild)) {
+                        subChild.map(item => element.appendChild(item));
+                    } else {
+                        element.appendChild(subChild);
+                    }
+                });
                 break;
             default:
                 break;
@@ -119,16 +130,20 @@ class UI {
         //     </td>
         // </tr>`)
         // .join('');
+        if (contacts.length === 0) {
+            table.appendChild("tr");
+        } else {
+            contacts.map(newContact => {
+                let tdId = ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.id);
+                let tdName = ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.name1);
+                let tdPhone = ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.phone);
+                let tdEmail = ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.email);
+                
+                let trContact = ui.elementBuilder("tr", {}, [tdId, tdName, tdPhone, tdEmail]);
+                table.appendChild(trContact);
+            });
+        }
         
-        let tdList = contacts.map(newContact => {
-            ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.id),
-            ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.name1),
-            ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.phone),
-            ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.email);
-        });
-        
-        table.appendChild(ui.elementBuilder("tr", {}, tdList));
-
 }
 }
 
