@@ -9,8 +9,8 @@ class Contact {
 }
 
 let table;
-// works that way correctly in case LS is empty
 let contactArray = JSON.parse(localStorage.getItem("contacts-list")  || "[]");
+// works that way correctly in case LS is empty
 // let contactArray = JSON.parse(localStorage.getItem("contacts-list"))   || "[]"; doesn't work
 
 // //add
@@ -53,42 +53,38 @@ function searchAny() {
                 item.email.includes(searchQuery)); // id comparison?
     });
 
-    if (filteredArray) {
-        document.querySelector("#tableList tbody").innerHTML = "";
-        ui.renderTable(table, filteredArray);
-    } else {
-        document.querySelector("#tableList tbody").innerHTML = "";
-        ui.renderTable(table, filteredArray);
-    }
+    document.querySelector("#tableList tbody").innerHTML = "";
+    ui.renderTable(table, filteredArray);
 
 }
-// id entity
-// id button ="edit-btn_${contact.id}"
-// eventtarget
-// event = argument 
-// event.target.id == edit-btn_${contact.id}"
-// вирізати "eidt-btn_" and we get ${contact.id}
 
 function editContact() {
-    
+    alert("edit!");
 }
 
-function deleteContact(event) {
-    let img = document.getElementById();// find by "delete-btn_" ?
-    let currentContact = img.id(slice(a.indexOf("_") + 1, a.length));
-    if(confirm(`Delete ${currentContact.name1} contact?`)) {
-        //delete here
+function deleteContact(contactId) {
+    // let currentContact = link.id(slice(a.indexOf("_") + 1, a.length));
+    let currentContact;
+    contactArray.map(i => {
+        if (i.id === contactId) {
+            currentContact = i;
+        }
+    });
 
+    if(confirm(`Delete ${currentContact.name1}?`)) {
+        localStorage
+        contactArray = JSON.parse(localStorage.getItem("contacts-list")  || "[]");
+        document.querySelector("#tableList tbody").innerHTML = "";
+        ui.renderTable(table, contactArray);
+        alert("Deleted!");
     }
 }
 
 class UI {
     elementBuilder (tagName, attributes, child) {
         const element = document.createElement(tagName);
-        
-        for (const [key, value] of Object.entries(attributes)) {
-            element.setAttribute(key, value);
-        }
+
+        ui.setCustomAttributes(element, attributes);
         
         switch (typeof child) {
             case 'string':
@@ -98,14 +94,20 @@ class UI {
                 element.appendChild(document.createTextNode(`${child}`));
                 break;  
             case 'object':
-                child.map(subChild => {
-                    if (Array.isArray(subChild)) {
-                        subChild.map(item => element.appendChild(item));
+                if (Array.isArray(child)) {
+                    if (Array.isArray(child[0])) {
+                        child.map(subChild => {
+                            subChild.map(subChild => element.appendChild(subChild));
+                        });
+                    break;
                     } else {
-                        element.appendChild(subChild);
-                    }
-                });
-                break;
+                        child.map(subChild => element.appendChild(subChild));
+                        break;
+                    }               
+                } else {
+                    element.appendChild(child);
+                    break;
+                }
             default:
                 break;
         }
@@ -114,37 +116,55 @@ class UI {
     }
 
     renderTable(table, contacts) {
-        //     table.innerHTML = contacts.map(contact => `
-        // <tr>
-        //     <td>${contact.id}</td>
-        //     <td>${contact.name1}</td>
-        //     <td>${contact.phone}</td>
-        //     <td>${contact.email}</td>
-        //     <td>
-        //         <a onclick="editContact()" href="#" id="pen-link">
-        //             <img id="edit-btn_${contact.id}" src="img/pen.png" alt="" style="height: 20px;"></img>
-        //         </a>
-        //         <a onclick="deleteContact()" href="#" id="delete-link">
-        //             <img id="delete-btn_${contact.id}" src="img/delete.png" alt="" style="height: 20px;"></img>
-        //         </a>
-        //     </td>
-        // </tr>`)
-        // .join('');
-        if (contacts.length === 0) {
-            table.appendChild("tr");
-        } else {
-            contacts.map(newContact => {
-                let tdId = ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.id);
-                let tdName = ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.name1);
-                let tdPhone = ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.phone);
-                let tdEmail = ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.email);
-                
-                let trContact = ui.elementBuilder("tr", {}, [tdId, tdName, tdPhone, tdEmail]);
-                table.appendChild(trContact);
-            });
+        contacts.map(newContact => {
+            let tdId = ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.id);
+            let tdName = ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.name1);
+            let tdPhone = ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.phone);
+            let tdEmail = ui.elementBuilder("td", {class: "table-cell", type: "text"}, newContact.email);
+
+            let trContact = ui.elementBuilder("tr", {}, [tdId, tdName, tdPhone, tdEmail]);
+
+            trContact.innerHTML +=
+                `<a onclick="editContact()" href="#" id="edit-btn_${newContact.id}">
+                    <img src="img/edit.png" alt="" style="height: 20px;"></img>
+                </a>`;
+            trContact.innerHTML +=
+                `<a onclick="deleteContact(${newContact.id})" href="#" id="delete-btn_${newContact.id}">
+                    <img src="img/delete.png" alt="" style="height: 20px;"></img>
+                </a>`;
+            
+            table.appendChild(trContact);
+        });
+    }
+
+    // renderLink (btnType, contact) {
+    //     let link = ui.elementBuilder(
+    //         "a", {
+    //         onclick: `${btnType}Contact()`,
+    //         href: "#", 
+    //         id: `${btnType}-link`},
+    //     );
+    //     return link;
+    // }
+
+    // renderIcon (iconType) {
+    //     let icon = document.createElement("img");
+    //     let iconAttributes = {
+    //         class: "table-btn",
+    //         src: `img/${iconType}.png`, 
+    //         alt: "#", 
+    //         style: "height: 20px;"};
+
+    //     ui.setCustomAttributes(icon, iconAttributes);
+
+    //     return icon;
+    // }
+
+    setCustomAttributes(element, attributes) {
+        for (const [key, value] of Object.entries(element, attributes)) {
+            element.setAttribute(key, value);
         }
-        
-}
+    }
 }
 
 const ui = new UI();
@@ -169,3 +189,21 @@ class App {
 const app = new App(ui);
 
 app.initialize();
+
+
+        //     table.innerHTML = contacts.map(contact => `
+        // <tr>
+        //     <td>${contact.id}</td>
+        //     <td>${contact.name1}</td>
+        //     <td>${contact.phone}</td>
+        //     <td>${contact.email}</td>
+        //     <td>
+        //         <a onclick="editContact()" href="#" id="pen-link">
+        //             <img id="edit-btn_${contact.id}" src="img/pen.png" alt="" style="height: 20px;"></img>
+        //         </a>
+        //         <a onclick="deleteContact()" href="#" id="delete-link">
+        //             <img id="delete-btn_${contact.id}" src="img/delete.png" alt="" style="height: 20px;"></img>
+        //         </a>
+        //     </td>
+        // </tr>`)
+        // .join(''); 
