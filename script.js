@@ -63,7 +63,6 @@ function editContact() {
 }
 
 function deleteContact(contactId) {
-    // let currentContact = link.id(slice(a.indexOf("_") + 1, a.length));
     let currentContact;
     contactArray.map(i => {
         if (i.id === contactId) {
@@ -72,11 +71,12 @@ function deleteContact(contactId) {
     });
 
     if(confirm(`Delete ${currentContact.name1}?`)) {
-        localStorage
-        contactArray = JSON.parse(localStorage.getItem("contacts-list")  || "[]");
+        const foundContactIndex = contactArray.findIndex(value => value.id === contactId);
+        contactArray.splice(foundContactIndex, 1);
+        
         document.querySelector("#tableList tbody").innerHTML = "";
+        localStorage.setItem("contacts-list", JSON.stringify(contactArray));
         ui.renderTable(table, contactArray);
-        alert("Deleted!");
     }
 }
 
