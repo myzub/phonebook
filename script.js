@@ -12,10 +12,17 @@ let table;
 let contactArray = JSON.parse(localStorage.getItem("contacts-list")  || "[]");
 // works that way correctly in case LS is empty
 // let contactArray = JSON.parse(localStorage.getItem("contacts-list"))   || "[]"; doesn't work
+let editModal = document.getElementById("editModal");
+let closeModal = document.getElementsByClassName("closeModal")[0];
 
-// //add
-let add = document.getElementById("add");
+function refreshTable(array) {
+    document.querySelector("#tableList tbody").innerHTML = "";
+    ui.renderTable(table, array);
+}
+
+//add
 add.addEventListener("click", function () {
+    let add = document.getElementById("add");
     const newContact = new Contact(
         document.querySelector("#name1").value,
         document.querySelector("#phone").value,
@@ -42,7 +49,7 @@ document.querySelector("#delete").addEventListener("click", function (event) {
 
     localStorage.clear();
     contactArray = [];
-    document.querySelector("#tableList tbody").innerHTML = "";
+    refreshTable(contactArray);
 })
 
 function searchAny() {
@@ -53,13 +60,57 @@ function searchAny() {
                 item.email.includes(searchQuery)); // id comparison?
     });
 
-    document.querySelector("#tableList tbody").innerHTML = "";
-    ui.renderTable(table, filteredArray);
-
+    refreshTable(filteredArray);
 }
 
-function editContact() {
-    alert("edit!");
+function editContact(contactId) {
+    let editSubmit = document.getElementById("edit-submit");
+    let currentContact;
+    let editedContact;
+    let indexOfCurrentContact;
+
+    contactArray.map(i => {
+        if (i.id === contactId) {
+            currentContact = i;
+            indexOfCurrentContact = contactArray.indexOf(i);
+        }
+    });
+
+    editModal.style.display = "block";
+
+    document.getElementById("edit-header").innerText = `Edit  ${currentContact.name1} contact?`;
+    
+    let editName1 = document.getElementById("edit-name1");
+    let editPhone = document.getElementById("edit-phone");
+    let editEmail = document.getElementById("edit-email");
+
+    editName1.value = currentContact.name1;
+    editPhone.value = currentContact.phone;
+    editEmail.value = currentContact.email;
+    editedContact = currentContact;
+
+    editSubmit.addEventListener("click", function () {
+        editModal.style.display = "none";
+
+        editedContact.name1 = editName1.value;
+        editedContact.phone = editPhone.value;
+        editedContact.email = editEmail.value;
+
+        contactArray.splice(indexOfCurrentContact, 1, editedContact);
+
+        localStorage.setItem("contacts-list", JSON.stringify(contactArray));
+        refreshTable(contactArray);
+    }); 
+}
+
+closeModal.onclick = function() {
+    editModal.style.display = "none";
+}
+
+window.onclick = function(event) {
+  if (event.target == editModal) {
+    editModal.style.display = "none";
+  }
 }
 
 function deleteContact(contactId) {
@@ -74,9 +125,8 @@ function deleteContact(contactId) {
         const foundContactIndex = contactArray.findIndex(value => value.id === contactId);
         contactArray.splice(foundContactIndex, 1);
         
-        document.querySelector("#tableList tbody").innerHTML = "";
         localStorage.setItem("contacts-list", JSON.stringify(contactArray));
-        ui.renderTable(table, contactArray);
+        refreshTable(contactArray);
     }
 }
 
@@ -125,7 +175,7 @@ class UI {
             let trContact = ui.elementBuilder("tr", {}, [tdId, tdName, tdPhone, tdEmail]);
 
             trContact.innerHTML +=
-                `<a onclick="editContact()" href="#" id="edit-btn_${newContact.id}">
+                `<a onclick="editContact(${newContact.id})" href="#" id="edit-btn_${newContact.id}">
                     <img src="img/edit.png" alt="" style="height: 20px;"></img>
                 </a>`;
             trContact.innerHTML +=
@@ -189,21 +239,3 @@ class App {
 const app = new App(ui);
 
 app.initialize();
-
-
-        //     table.innerHTML = contacts.map(contact => `
-        // <tr>
-        //     <td>${contact.id}</td>
-        //     <td>${contact.name1}</td>
-        //     <td>${contact.phone}</td>
-        //     <td>${contact.email}</td>
-        //     <td>
-        //         <a onclick="editContact()" href="#" id="pen-link">
-        //             <img id="edit-btn_${contact.id}" src="img/pen.png" alt="" style="height: 20px;"></img>
-        //         </a>
-        //         <a onclick="deleteContact()" href="#" id="delete-link">
-        //             <img id="delete-btn_${contact.id}" src="img/delete.png" alt="" style="height: 20px;"></img>
-        //         </a>
-        //     </td>
-        // </tr>`)
-        // .join(''); 
