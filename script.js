@@ -58,13 +58,13 @@ function editContact(contactId) {
   let editedContact;
   let indexOfCurrentContact;
 
-//   refactor to Array.find 
-    contactArray.map((i) => {
-      if (i.id === contactId) {
-        currentContact = i;
-        indexOfCurrentContact = contactArray.indexOf(i);
-      }
-    });
+  //   refactor to Array.find
+  contactArray.map((i) => {
+    if (i.id === contactId) {
+      currentContact = i;
+      indexOfCurrentContact = contactArray.indexOf(i);
+    }
+  });
 
   editModal.style.display = "block";
 
@@ -125,7 +125,7 @@ function deleteContact(contactId) {
   document.getElementById(
     "delete-header"
   ).innerText = `Edit  ${currentContact.name1} contact?`;
-  
+
   deleteSubmit.addEventListener("click", function eventHandler() {
     deleteModal.style.display = "none";
 
@@ -142,6 +142,12 @@ function deleteContact(contactId) {
 }
 
 class UI {
+  setCustomAttributes(element, attributes) {
+    for (const [key, value] of Object.entries(element, attributes)) {
+      element.setAttribute(key, value);
+    }
+  }
+
   elementBuilder(tagName, attributes, child) {
     const element = document.createElement(tagName);
 
@@ -162,7 +168,9 @@ class UI {
             });
             break;
           } else {
-            child.map((subChild) => {return element.appendChild(subChild)});
+            child.map((subChild) => {
+              return element.appendChild(subChild);
+            });
             break;
           }
         } else {
@@ -221,7 +229,7 @@ class UI {
         tdPhone,
         tdEmail,
         editLink,
-        deleteLink
+        deleteLink,
       ]);
 
       trContact.innerHTML += `<a onclick="editContact(${newContact.id})" href="#" id="edit-btn_${newContact.id}">
@@ -235,10 +243,42 @@ class UI {
     });
   }
 
-  setCustomAttributes(element, attributes) {
-    for (const [key, value] of Object.entries(element, attributes)) {
-      element.setAttribute(key, value);
-    }
+  root = document.getElementById("root");
+
+  renderForm() {}
+
+  renderTableHeader() {}
+
+  renderEditModal() {}
+
+  renderDeleteModal() {
+    const deleteSubmit = ui.elementBuilder("input", {
+      type: "submit",
+      id: "delete-submit",
+    });    
+    const modalFooter = ui.elementBuilder("div", { class: "modal-footer" }, deleteSubmit);
+    const modalBody = ui.elementBuilder("div", { class: "modal-body" });
+    const closeModal = ui.elementBuilder("span", { class: "closeModal" }, "&times;");
+    const deleteHeader = ui.elementBuilder("h2", { id: "delete-header" });
+
+    const modalHeader = ui.elementBuilder("div", { class: "modal-header" },[
+      closeModal,
+      deleteHeader
+    ]);
+
+    const ModalContent = ui.elementBuilder("div", { class: "modal-content" },[
+      modalHeader,
+      modalBody,
+      modalFooter
+    ]);
+
+    const deleteModalDiv = ui.elementBuilder("div", {
+      id: "deleteModal",
+      class: "modal",
+    }, [
+      ModalContent
+    ]);
+    document.body.appendChild(deleteModalDiv);
   }
 }
 
@@ -259,16 +299,16 @@ class App {
 
   initialize() {
     this.ui.renderTable(this.table, contactArray);
+    this.ui.renderDeleteModal();
   }
 }
 const app = new App(ui);
 
 app.initialize();
 
-
-// rewrite edit,  
-// get rid of innerHTML in renderTable
-// delete html and render all up in js, in body has to be <div>root</div>  
+// rewrite edit,
+// get rid of innerHTML in renderTable  ??
+// delete html and render all up in js, in body has to be <div>root</div>
 // refactor mentions
 // NOT LET, CONST!!!
 //
