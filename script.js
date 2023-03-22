@@ -11,6 +11,7 @@ class Contact {
 let table;
 let contactArray = JSON.parse(localStorage.getItem("contacts-list")) || [];
 let editModal = document.getElementById("editModal");
+let deleteModal = document.getElementById("deleteModal");
 let closeModal = document.getElementsByClassName("closeModal")[0];
 
 function refreshTable(array) {
@@ -98,23 +99,36 @@ function editContact(contactId) {
 
 closeModal.onclick = function () {
   editModal.style.display = "none";
+  deleteModal.style.display = "none";
 };
 
 window.onclick = function (event) {
   if (event.target == editModal) {
     editModal.style.display = "none";
+  } else if (event.target == deleteModal) {
+    deleteModal.style.display = "none";
   }
 };
 
 function deleteContact(contactId) {
+  const deleteSubmit = document.getElementById("delete-submit");
   let currentContact;
+
   contactArray.map((i) => {
     if (i.id === contactId) {
       currentContact = i;
     }
   });
 
-  if (confirm(`Delete ${currentContact.name1}?`)) {
+  deleteModal.style.display = "block";
+
+  document.getElementById(
+    "delete-header"
+  ).innerText = `Edit  ${currentContact.name1} contact?`;
+  
+  deleteSubmit.addEventListener("click", function eventHandler() {
+    deleteModal.style.display = "none";
+
     const foundContactIndex = contactArray.findIndex(
       (value) => value.id === contactId
     );
@@ -122,7 +136,9 @@ function deleteContact(contactId) {
 
     localStorage.setItem("contacts-list", JSON.stringify(contactArray));
     refreshTable(contactArray);
-  }
+
+    deleteSubmit.removeEventListener("click", eventHandler);
+  });
 }
 
 class UI {
@@ -204,7 +220,8 @@ class UI {
         tdName,
         tdPhone,
         tdEmail,
-        editLink
+        editLink,
+        deleteLink
       ]);
 
       trContact.innerHTML += `<a onclick="editContact(${newContact.id})" href="#" id="edit-btn_${newContact.id}">
@@ -249,8 +266,9 @@ const app = new App(ui);
 app.initialize();
 
 
-// rewrite edit, 
-// delete modal write new, delete html and render all up in js, refactor mentions  
-//in body has to be <div>root</div>
+// rewrite edit,  
+// get rid of innerHTML in renderTable
+// delete html and render all up in js, in body has to be <div>root</div>  
+// refactor mentions
 // NOT LET, CONST!!!
 //
