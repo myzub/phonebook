@@ -10,14 +10,13 @@ class Contact {
 
 let table;
 let contactArray = JSON.parse(localStorage.getItem("contacts-list")) || [];
-let editModal = document.getElementById("editModal");
-let deleteModal = document.getElementById("deleteModal");
-//find by id two crosses separetely
-// separate delete and edit
-let closeModal = document.getElementsByClassName("close-modal")[0];
+let editModalDiv = window.editModalDiv;
+let deleteModalDiv = window.deleteModalDiv;
+let closeEditModalButton = window.closeEditModalButton;
+let closeDeleteModalButton = window.closeDeleteModalButton;
 
 function refreshTable(array) {
-  document.querySelector("#tableList tbody").innerHTML = "";
+  document.querySelector("#tableList").innerHTML = "";
   ui.renderTable(table, array);
 }
 
@@ -33,13 +32,15 @@ add.addEventListener("click", function () {
 });
 
 //delete all
-document.querySelector("#deleteAll").addEventListener("click", function (event) {
-  event.preventDefault();
+document
+  .querySelector("#deleteAll")
+  .addEventListener("click", function (event) {
+    event.preventDefault();
 
-  localStorage.clear();
-  contactArray = [];
-  refreshTable(contactArray);
-});
+    localStorage.clear();
+    contactArray = [];
+    refreshTable(contactArray);
+  });
 
 function searchAny() {
   const searchQuery = document.getElementById("searchbox").value;
@@ -68,7 +69,7 @@ function editContact(contactId) {
     }
   });
 
-  editModal.style.display = "block";
+  editModalDiv.style.display = "block";
 
   document.getElementById(
     "editHeader"
@@ -84,13 +85,13 @@ function editContact(contactId) {
   editedContact = currentContact;
 
   editSubmit.addEventListener("click", function eventHandler() {
-    editModal.style.display = "none";
+    editModalDiv.style.display = "none";
 
     editedContact.name1 = editName1.value;
     editedContact.phone = editPhone.value;
     editedContact.email = editEmail.value;
 
-    // filter method
+    // filter method, not splice
     contactArray.splice(indexOfCurrentContact, 1, editedContact);
 
     localStorage.setItem("contacts-list", JSON.stringify(contactArray));
@@ -102,31 +103,32 @@ function editContact(contactId) {
 
 const getRemoveListenerFunction = ({ eventType, element, callback }) => {
   element.removeEventListener(eventType, callback);
+  
 };
-// separate delete and edit
-closeModal.addEventListener("click", function eventHandler() {});
-// separate delete and edit
-closeModal.onclick = function () {
-  editModal.style.display = "none";
-  deleteModal.style.display = "none";
-  deleteSubmit.removeEventListener("click", removeContact);
+//click on X edit
+closeEditModalButton.onclick = function () {
+  editModalDiv.style.display = "none";
 };
 
+closeEditModalButton.addEventListener("click", function eventHandler() {});
+
+// click anywhere to close modal
 window.onclick = function (event) {
-  if (event.target == editModal) {
-    editModal.style.display = "none";
-  } else if (event.target == deleteModal) {
-    deleteModal.style.display = "none";
+  if (event.target == editModalDiv) {
+    editModalDiv.style.display = "none";
+  } else if (event.target == deleteModalDiv) {
+    deleteModalDiv.style.display = "none";
   }
 };
 
 function removeContact() {
-  deleteModal.style.display = "none";
-  // filter
+  // TODO make with filter
   const foundContactIndex = contactArray.findIndex(
     (value) => value.id === app.selectedId
   );
   contactArray.splice(foundContactIndex, 1);
+  
+  deleteModalDiv.style.display = "none";
 
   localStorage.setItem("contacts-list", JSON.stringify(contactArray));
   refreshTable(contactArray);
@@ -136,14 +138,13 @@ function deleteContact() {
   const deleteSubmit = document.getElementById("deleteSubmit");
   let currentContact;
 
-  console.log(app.selectedId, "selectedId");
   contactArray.map((i) => {
     if (i.id === app.selectedId) {
       currentContact = i;
     }
   });
 
-  deleteModal.style.display = "block";
+  deleteModalDiv.style.display = "block";
 
   document.getElementById(
     "deleteHeader"
@@ -152,15 +153,15 @@ function deleteContact() {
   deleteSubmit.addEventListener("click", removeContact);
 }
 
+//click on X delete
+closeDeleteModalButton.onclick = function () {
+  deleteModalDiv.style.display = "none";
+};
+closeDeleteModalButton.addEventListener("click", function eventHandler() {});
+
 /*
 rewrite edit,
-get rid of innerHTML in renderTable  ??
-delete html and render all up in js, in body has to be <div>root</div>
 refactor mentions
 NOT LET, CONST!!!
 event listener vs onclick
-
-!!! in new js file
-renderHeader
-renderForm
 */

@@ -51,15 +51,15 @@ border: 1px solid #888;
 width: 80%;
 }
 
-.closeModal {
+.close-modal {
 color: #aaa;
 float: right;
 font-size: 28px;
 font-weight: bold;
 }
 
-.closeModal:hover,
-.closeModal:focus {
+.close-modal:hover,
+.close-modal:focus {
 color: black;
 text-decoration: none;
 cursor: pointer;

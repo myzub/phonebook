@@ -1,10 +1,10 @@
 class UI {
-  constructor() {}
+  constructor() { }
 
   root = document.getElementById("root");
 
   setCustomAttributes(element, attributes) {
-  for (const [key, value] of Object.entries(attributes)) {
+    for (const [key, value] of Object.entries(attributes)) {
       element.setAttribute(key, value);
     }
   }
@@ -53,7 +53,7 @@ class UI {
       placeholder: "search",
       onInput: "searchAny()", // TODO rewrite as eventListener
     });
-    const br = ui.elementBuilder("br",{},);
+    const br = ui.elementBuilder("br", {},);
     const inputname = ui.elementBuilder("input", {
       type: "text",
       name: "name1",
@@ -101,13 +101,13 @@ class UI {
   }
 
   renderTableHeader() {
-    const thId = ui.elementBuilder("th",{}, "id");
-    const thPhone = ui.elementBuilder("th",{}, "phone");
-    const thEmail = ui.elementBuilder("th",{}, "email");
+    const thId = ui.elementBuilder("th", {}, "id");
+    const thPhone = ui.elementBuilder("th", {}, "phone");
+    const thEmail = ui.elementBuilder("th", {}, "email");
     const tr = ui.elementBuilder("tr", {}, [thId, thPhone, thEmail]);
     const thead = ui.elementBuilder("thead", {}, [tr]);
-    const tbody = ui.elementBuilder("tbody", {id: "tableList"});
-    const tableList = ui.elementBuilder("table", { id: "tableList" }, [
+    const tbody = ui.elementBuilder("tbody", { id: "tableList" });
+    const tableList = ui.elementBuilder("table", {}, [
       thead,
       tbody,
     ]);
@@ -181,10 +181,10 @@ class UI {
     const closeEditModalButton = ui.elementBuilder(
       "span",
       { id: "closeEditModalButton", class: "close-modal" },
-      "&times;"
+      "X"
     );
     const editHeader = ui.elementBuilder("h2", { id: "editHeader" });
-    const modalHeader = ui.elementBuilder("div", { id: "modalHeader" }, [
+    const modalHeader = ui.elementBuilder("div", { id: "modalHeader", class: "modal-header" }, [
       closeEditModalButton,
       editHeader,
     ]);
@@ -226,8 +226,8 @@ class UI {
       modalBody,
       modalFooter,
     ]);
-    const editModalDiv = ui.elementBuilder("div", { id: "editModal", class: "modal" }, [
-        modalContent
+    const editModalDiv = ui.elementBuilder("div", { id: "editModalDiv", class: "modal" }, [
+      modalContent
     ]);
     document.body.appendChild(editModalDiv);
   }
@@ -235,8 +235,8 @@ class UI {
   renderDeleteModal() {
     const closeDeleteModalButton = ui.elementBuilder(
       "span",
-      { id: "closeEditModalButton", class: "close-modal" },
-      "&times;"
+      { id: "closeDeleteModalButton", class: "close-modal" },
+      "X"
     );
     const deleteHeader = ui.elementBuilder("h2", { id: "deleteHeader" });
     const modalHeader = ui.elementBuilder("div", { class: "modal-header" }, [
@@ -251,7 +251,7 @@ class UI {
       deleteSubmit,
     ]);
     const modalBody = ui.elementBuilder("div", { class: "modal-body" });
-    const ModalContent = ui.elementBuilder("div", { class: "modal-content" }, [
+    const modalContent = ui.elementBuilder("div", { class: "modal-content" }, [
       modalHeader,
       modalBody,
       modalFooter,
@@ -259,10 +259,10 @@ class UI {
     const deleteModalDiv = ui.elementBuilder(
       "div",
       {
-        id: "deleteModal",
+        id: "deleteModalDiv",
         class: "modal",
       },
-      [ModalContent]
+      [modalContent]
     );
     document.body.appendChild(deleteModalDiv);
   }
