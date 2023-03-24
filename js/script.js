@@ -33,7 +33,7 @@ add.addEventListener("click", function () {
 });
 
 //delete all
-document.querySelector("#delete").addEventListener("click", function (event) {
+document.querySelector("#deleteAll").addEventListener("click", function (event) {
   event.preventDefault();
 
   localStorage.clear();

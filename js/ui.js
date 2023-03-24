@@ -4,7 +4,7 @@ class UI {
   root = document.getElementById("root");
 
   setCustomAttributes(element, attributes) {
-    for (const [key, value] of Object.entries(attributes)) {
+  for (const [key, value] of Object.entries(attributes)) {
       element.setAttribute(key, value);
     }
   }
@@ -53,7 +53,7 @@ class UI {
       placeholder: "search",
       onInput: "searchAny()", // TODO rewrite as eventListener
     });
-    br = ui.elementBuilder("br");
+    const br = ui.elementBuilder("br",{},);
     const inputname = ui.elementBuilder("input", {
       type: "text",
       name: "name1",
@@ -83,11 +83,11 @@ class UI {
       "button",
       {
         type: "button",
-        id: "delete",
+        id: "deleteAll",
       },
       "Delete all"
     );
-    const inputForm = ui.elementBuilder("", { id: input - form }, [
+    const inputForm = ui.elementBuilder("form", { id: "inputForm" }, [
       inputSearch,
       br,
       inputname,
@@ -101,12 +101,12 @@ class UI {
   }
 
   renderTableHeader() {
-    const thId = ui.elementBuilder("th");
-    const thPhone = ui.elementBuilder("th");
-    const thEmail = ui.elementBuilder("th");
+    const thId = ui.elementBuilder("th",{}, "id");
+    const thPhone = ui.elementBuilder("th",{}, "phone");
+    const thEmail = ui.elementBuilder("th",{}, "email");
     const tr = ui.elementBuilder("tr", {}, [thId, thPhone, thEmail]);
     const thead = ui.elementBuilder("thead", {}, [tr]);
-    const tbody = ui.elementBuilder("tbody");
+    const tbody = ui.elementBuilder("tbody", {id: "tableList"});
     const tableList = ui.elementBuilder("table", { id: "tableList" }, [
       thead,
       tbody,
@@ -114,7 +114,8 @@ class UI {
     document.body.appendChild(tableList);
   }
 
-  renderTable(table, contacts) {
+  renderTable(tableList, contacts) {
+    tableList = document.getElementById("tableList");
     contacts.map((newContact) => {
       const tdId = ui.elementBuilder(
         "td",
@@ -136,7 +137,6 @@ class UI {
         { class: "table-cell", type: "text" },
         newContact.email
       );
-
       const deleteImg = ui.elementBuilder("img", {
         src: "img/delete.png",
         style: "height: 20px;",
@@ -145,33 +145,26 @@ class UI {
         src: "img/edit.png",
         style: "height: 20px;",
       });
-
       const editLink = ui.elementBuilder("a", { href: "#" }, editImg);
-
       const tdEditLink = ui.elementBuilder(
         "td",
         { class: "table-cell", type: "text" },
         editLink
       );
-
       editLink.addEventListener("click", () => {
         editContact(newContact.id);
       });
-
       const deleteLink = ui.elementBuilder("a", { href: "#" }, deleteImg);
-
       const tdDeleteLink = ui.elementBuilder(
         "td",
         { class: "table-cell", type: "text" },
         deleteLink
       );
-
       deleteLink.addEventListener("click", () => {
         app.setSelectedId(newContact.id);
         console.log(app.selectedId, "selectedID");
         deleteContact();
       });
-
       const trContact = ui.elementBuilder("tr", {}, [
         tdId,
         tdName,
@@ -180,8 +173,7 @@ class UI {
         tdEditLink,
         tdDeleteLink,
       ]);
-
-      table.appendChild(trContact);
+      tableList.appendChild(trContact);
     });
   }
 
@@ -234,9 +226,7 @@ class UI {
       modalBody,
       modalFooter,
     ]);
-    const editModalDiv = ui.elementBuilder(
-      "div",
-      { id: "editModal", class: "modal" }[
+    const editModalDiv = ui.elementBuilder("div", { id: "editModal", class: "modal" }, [
         modalContent
     ]);
     document.body.appendChild(editModalDiv);

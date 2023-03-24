@@ -1,11 +1,13 @@
 class App {
-  appUi;
+  windowUI;
   table;
   selectedId;
+  contactArray;
 
   constructor(UI) {
-    this.appUi = UI;
+    this.windowUI = UI;
     this.getTable();
+    this.getContactArray();
   }
 
   setSelectedId(id) {
@@ -13,22 +15,34 @@ class App {
   }
 
   getTable() {
-    this.table = table = document.querySelector("#tableList tbody");
+    this.table = document.querySelector("#tableList tbody");
+  }
+
+  getContactArray() {
+    this.contactArray = JSON.parse(localStorage.getItem("contacts-list")) || [];
   }
 
   initialize() {
-    this.appUi.renderForm();
-    this.appUi.renderTable(this.table, contactArray);
-    this.appUi.renderDeleteModal();
+    this.windowUI.renderForm();
+    this.windowUI.renderTableHeader();
+    this.windowUI.renderTable(this.table, this.contactArray);
+    this.windowUI.renderEditModal();
+    this.windowUI.renderDeleteModal();
   }
 }
 
-const appUi = window.UI;
+const windowUI = window.UI;
 
-(function (appUi) {
+const app = new App(windowUI);
+app.initialize();
+
+
+/* 
+(function (windowUI) {
   //APP
-  const app = new App(appUi);
+  const app = new App(windowUI);
   app.initialize();
 
-  console.log(appUi, "appUi");
+  console.log(windowUI, "windowUI");
 })(window);
+ */
