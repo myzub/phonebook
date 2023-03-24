@@ -1,8 +1,7 @@
 class UI {
-  constructor() {
+  constructor() {}
 
-  }
-
+  root = document.getElementById("root");
 
   setCustomAttributes(element, attributes) {
     for (const [key, value] of Object.entries(attributes)) {
@@ -47,6 +46,74 @@ class UI {
     return element;
   }
 
+  renderForm() {
+    const inputSearch = ui.elementBuilder("input", {
+      name: "search",
+      id: "searchbox",
+      placeholder: "search",
+      onInput: "searchAny()", // TODO rewrite as eventListener
+    });
+    br = ui.elementBuilder("br");
+    const inputname = ui.elementBuilder("input", {
+      type: "text",
+      name: "name1",
+      id: "name1",
+      placeholder: "name",
+      value: "",
+    });
+    const inputPhone = ui.elementBuilder("input", {
+      type: "text",
+      name: "phone",
+      id: "phone",
+      placeholder: "phone",
+      value: "",
+    });
+    const inputEmail = ui.elementBuilder("input", {
+      type: "text",
+      name: "email",
+      id: "email",
+      placeholder: "email",
+      value: "",
+    });
+    const addContactSubmit = ui.elementBuilder("input", {
+      type: "submit",
+      id: "add",
+    });
+    const deleteAllButton = ui.elementBuilder(
+      "button",
+      {
+        type: "button",
+        id: "delete",
+      },
+      "Delete all"
+    );
+    const inputForm = ui.elementBuilder("", { id: input - form }, [
+      inputSearch,
+      br,
+      inputname,
+      inputPhone,
+      inputEmail,
+      addContactSubmit,
+      deleteAllButton,
+    ]);
+    document.body.appendChild(inputForm);
+    document.body.appendChild(br);
+  }
+
+  renderTableHeader() {
+    const thId = ui.elementBuilder("th");
+    const thPhone = ui.elementBuilder("th");
+    const thEmail = ui.elementBuilder("th");
+    const tr = ui.elementBuilder("tr", {}, [thId, thPhone, thEmail]);
+    const thead = ui.elementBuilder("thead", {}, [tr]);
+    const tbody = ui.elementBuilder("tbody");
+    const tableList = ui.elementBuilder("table", { id: "tableList" }, [
+      thead,
+      tbody,
+    ]);
+    document.body.appendChild(tableList);
+  }
+
   renderTable(table, contacts) {
     contacts.map((newContact) => {
       const tdId = ui.elementBuilder(
@@ -70,8 +137,14 @@ class UI {
         newContact.email
       );
 
-      const deleteImg = ui.elementBuilder("img", { src: "img/delete.png", style: "height: 20px;" });
-      const editImg = ui.elementBuilder("img", { src: "img/edit.png", style: "height: 20px;" });
+      const deleteImg = ui.elementBuilder("img", {
+        src: "img/delete.png",
+        style: "height: 20px;",
+      });
+      const editImg = ui.elementBuilder("img", {
+        src: "img/edit.png",
+        style: "height: 20px;",
+      });
 
       const editLink = ui.elementBuilder("a", { href: "#" }, editImg);
 
@@ -112,43 +185,87 @@ class UI {
     });
   }
 
-  root = document.getElementById("root");
-
-  renderForm() { }
-
-  renderTableHeader() { }
-
-  renderEditModal() { }
-
-  renderDeleteModal() {
-    const deleteSubmit = ui.elementBuilder("input", {
-      type: "submit",
-      id: "delete-submit",
-    });
-    const modalFooter = ui.elementBuilder(
-      "div",
-      { class: "modal-footer" },
-      deleteSubmit
-    );
-    const modalBody = ui.elementBuilder("div", { class: "modal-body" });
-    const closeModal = ui.elementBuilder(
+  renderEditModal() {
+    const closeEditModalButton = ui.elementBuilder(
       "span",
-      { class: "closeModal" },
+      { id: "closeEditModalButton", class: "close-modal" },
       "&times;"
     );
-    const deleteHeader = ui.elementBuilder("h2", { id: "delete-header" });
+    const editHeader = ui.elementBuilder("h2", { id: "editHeader" });
+    const modalHeader = ui.elementBuilder("div", { id: "modalHeader" }, [
+      closeEditModalButton,
+      editHeader,
+    ]);
+    const inputName = ui.elementBuilder("input", {
+      type: "text",
+      name: "name1",
+      id: "editName1",
+      placeholder: "name",
+      value: "",
+    });
+    const inputPhone = ui.elementBuilder("input", {
+      type: "text",
+      name: "phone",
+      id: "editPhone",
+      placeholder: "phone",
+      value: "",
+    });
+    const inputEmail = ui.elementBuilder("input", {
+      type: "text",
+      name: "email",
+      id: "editEmail",
+      placeholder: "email",
+      value: "",
+    });
+    const modalBody = ui.elementBuilder("div", { class: "modal-body" }, [
+      inputName,
+      inputPhone,
+      inputEmail,
+    ]);
+    const inputNewContactSubmit = ui.elementBuilder("input", {
+      type: "submit",
+      id: "editSubmit",
+    });
+    const modalFooter = ui.elementBuilder("div", { class: "modal-footer" }, [
+      inputNewContactSubmit,
+    ]);
+    const modalContent = ui.elementBuilder("div", { class: "modal-content" }, [
+      modalHeader,
+      modalBody,
+      modalFooter,
+    ]);
+    const editModalDiv = ui.elementBuilder(
+      "div",
+      { id: "editModal", class: "modal" }[
+        modalContent
+    ]);
+    document.body.appendChild(editModalDiv);
+  }
 
+  renderDeleteModal() {
+    const closeDeleteModalButton = ui.elementBuilder(
+      "span",
+      { id: "closeEditModalButton", class: "close-modal" },
+      "&times;"
+    );
+    const deleteHeader = ui.elementBuilder("h2", { id: "deleteHeader" });
     const modalHeader = ui.elementBuilder("div", { class: "modal-header" }, [
-      closeModal,
+      closeDeleteModalButton,
       deleteHeader,
     ]);
-
+    const deleteSubmit = ui.elementBuilder("input", {
+      type: "submit",
+      id: "deleteSubmit",
+    });
+    const modalFooter = ui.elementBuilder("div", { class: "modal-footer" }, [
+      deleteSubmit,
+    ]);
+    const modalBody = ui.elementBuilder("div", { class: "modal-body" });
     const ModalContent = ui.elementBuilder("div", { class: "modal-content" }, [
       modalHeader,
       modalBody,
       modalFooter,
     ]);
-
     const deleteModalDiv = ui.elementBuilder(
       "div",
       {
@@ -160,7 +277,6 @@ class UI {
     document.body.appendChild(deleteModalDiv);
   }
 }
-
 
 const ui = new UI();
 

@@ -1,34 +1,34 @@
 class App {
-    ui;
-    table;
-    selectedId;
-  
-    constructor(UI) {
-      this.ui = UI;
-      this.getTable();
-    }
-  
-    setSelectedId(id) {
-      this.selectedId = id;
-    }
-  
-    getTable() {
-      this.table = table = document.querySelector("#tableList tbody");
-    }
-  
-    initialize() {
-      this.ui.renderTable(this.table, contactArray);
-      this.ui.renderDeleteModal();
-    }
+  appUi;
+  table;
+  selectedId;
+
+  constructor(UI) {
+    this.appUi = UI;
+    this.getTable();
   }
-  
 
-const ui = window.UI;
+  setSelectedId(id) {
+    this.selectedId = id;
+  }
 
-(function(ui) {
-    //APP
-    const app = new App(ui);
-    app.initialize();
+  getTable() {
+    this.table = table = document.querySelector("#tableList tbody");
+  }
 
-    console.log(ui, 'ui')
+  initialize() {
+    this.appUi.renderForm();
+    this.appUi.renderTable(this.table, contactArray);
+    this.appUi.renderDeleteModal();
+  }
+}
+
+const appUi = window.UI;
+
+(function (appUi) {
+  //APP
+  const app = new App(appUi);
+  app.initialize();
+
+  console.log(appUi, "appUi");
 })(window);

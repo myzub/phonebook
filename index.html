@@ -1,69 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="style.css"/>  
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
     <title>MZ Playground</title>
-</head>
-<body>
+  </head>
+
+  <body>
     <form id="input-form">
-        <input type="search" name="search" id="searchbox" placeholder="search" onInput="searchAny()">
-        <br>
-        <input type="text" name="name1" id="name1" placeholder="name" value="">
-        <input type="text" name="phone" id="phone" placeholder="phone" value="">
-        <input type="text" name="email" id="email" placeholder="email" value="">
+      <input
+        type="search"
+        name="search"
+        id="searchbox"
+        placeholder="search"
+        onInput="searchAny()"
+      />
+      <br />
+      <input type="text" name="name1" id="name1" placeholder="name" value="" />
+      <input type="text" name="phone" id="phone" placeholder="phone" value="" />
+      <input type="text" name="email" id="email" placeholder="email" value="" />
 
-        <input type="submit" id="add"> 
-        <button type="button" id="delete">Delete all</button> 
-    </form>   
-    <br>
+      <input type="submit" id="add" />
+      <button type="button" id="delete">Delete all</button>
+    </form>
+    <br />
     <table id="tableList">
-        <thead>
-            <tr>
-                <th>id</th>
-                <th>name</th>
-                <th>phone</th>
-                <th>email</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>name</th>
+          <th>phone</th>
+          <th>email</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
     <div id="editModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-              <span class="closeModal">&times;</span>
-              <h2 id="edit-header"></h2>
-            </div>
-            <div class="modal-body">
-                <input type="text" name="name1" id="edit-name1" placeholder="name" value="">
-                <input type="text" name="phone" id="edit-phone" placeholder="phone" value="">
-                <input type="text" name="email" id="edit-email" placeholder="email" value="">
-            </div>
-            <div class="modal-footer">
-                <input type="submit" id="edit-submit">
-            </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="close-modal">&times;</span>
+          <h2 id="editHeader"></h2>
         </div>
+        <div class="modal-body">
+          <input
+            type="text"
+            name="name1"
+            id="editName1"
+            placeholder="name"
+            value=""
+          />
+          <input
+            type="text"
+            name="phone"
+            id="editPhone"
+            placeholder="phone"
+            value=""
+          />
+          <input
+            type="text"
+            name="email"
+            id="editEmail"
+            placeholder="email"
+            value=""
+          />
+        </div>
+        <div class="modal-footer">
+          <input type="submit" id="editSubmit" />
+        </div>
+      </div>
     </div>
-    <!-- <div id="deleteModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-              <span class="closeModal">&times;</span>
-              <h2 id="delete-header"></h2>
-            </div>
-            <div class="modal-body"></div>
-            <div class="modal-footer">
-                <input type="submit" id="delete-submit">
-            </div>
+    <div id="deleteModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="close-modal">&times;</span>
+          <h2 id="deleteHeader"></h2>
         </div>
-    </div> -->
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+          <input type="submit" id="deleteSubmit" />
+        </div>
+      </div>
+    </div>
     <div id="root"></div>
 
     <script src="ui.js"></script>
     <script src="app.js"></script>
-    <!-- <script src="script.js"></script> -->
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
