@@ -12,6 +12,7 @@ let table;
 let contactArray = JSON.parse(localStorage.getItem("contacts-list")) || [];
 let editModal = document.getElementById("editModal");
 let deleteModal = document.getElementById("deleteModal");
+//find by id two crosses separetely
 let closeModal = document.getElementsByClassName("closeModal")[0];
 
 function refreshTable(array) {
@@ -88,6 +89,7 @@ function editContact(contactId) {
     editedContact.phone = editPhone.value;
     editedContact.email = editEmail.value;
 
+    // filter method
     contactArray.splice(indexOfCurrentContact, 1, editedContact);
 
     localStorage.setItem("contacts-list", JSON.stringify(contactArray));
@@ -97,9 +99,16 @@ function editContact(contactId) {
   });
 }
 
+const getRemoveListenerFunction = ({ eventType, element, callback }) => {
+  element.removeEventListener(eventType, callback);
+};
+
+closeModal.addEventListener("click", function eventHandler() {});
+
 closeModal.onclick = function () {
   editModal.style.display = "none";
   deleteModal.style.display = "none";
+  deleteSubmit.removeEventListener("click", removeContact);
 };
 
 window.onclick = function (event) {
@@ -110,12 +119,25 @@ window.onclick = function (event) {
   }
 };
 
-function deleteContact(contactId) {
+function removeContact() {
+  deleteModal.style.display = "none";
+  // filter
+  const foundContactIndex = contactArray.findIndex(
+    (value) => value.id === app.selectedId
+  );
+  contactArray.splice(foundContactIndex, 1);
+
+  localStorage.setItem("contacts-list", JSON.stringify(contactArray));
+  refreshTable(contactArray);
+}
+
+function deleteContact() {
   const deleteSubmit = document.getElementById("delete-submit");
   let currentContact;
 
+  console.log(app.selectedId, "selectedId");
   contactArray.map((i) => {
-    if (i.id === contactId) {
+    if (i.id === app.selectedId) {
       currentContact = i;
     }
   });
@@ -126,24 +148,12 @@ function deleteContact(contactId) {
     "delete-header"
   ).innerText = `Edit  ${currentContact.name1} contact?`;
 
-  deleteSubmit.addEventListener("click", function eventHandler() {
-    deleteModal.style.display = "none";
-
-    const foundContactIndex = contactArray.findIndex(
-      (value) => value.id === contactId
-    );
-    contactArray.splice(foundContactIndex, 1);
-
-    localStorage.setItem("contacts-list", JSON.stringify(contactArray));
-    refreshTable(contactArray);
-
-    deleteSubmit.removeEventListener("click", eventHandler);
-  });
+  deleteSubmit.addEventListener("click", removeContact);
 }
 
 class UI {
   setCustomAttributes(element, attributes) {
-    for (const [key, value] of Object.entries(element, attributes)) {
+    for (const [key, value] of Object.entries(attributes)) {
       element.setAttribute(key, value);
     }
   }
@@ -162,6 +172,7 @@ class UI {
         break;
       case "object":
         if (Array.isArray(child)) {
+          // Recursion
           if (Array.isArray(child[0])) {
             child.map((subChild) => {
               subChild.map((subChild) => element.appendChild(subChild));
@@ -206,21 +217,36 @@ class UI {
         { class: "table-cell", type: "text" },
         newContact.email
       );
-      const editLink = ui.elementBuilder(
-        "a",
-        { href: "#" },
-        ui.elementBuilder("img", { src: "img/edit.png" })
+
+      const deleteImg = ui.elementBuilder("img", { src: "img/delete.png" });
+      const editImage = ui.elementBuilder("img", { src: "img/edit.png" });
+
+
+      const editLink = ui.elementBuilder("a", { href: "#" }, editImage);
+
+      const tdEditLink = ui.elementBuilder(
+        "td",
+        { class: "table-cell", type: "text" },
+        editLink
       );
+
       editLink.addEventListener("click", () => {
         editContact(newContact.id);
       });
-      const deleteLink = ui.elementBuilder(
-        "a",
-        { href: "#" },
-        ui.elementBuilder("img", { src: "img/delete.png" })
+
+      
+      const deleteLink = ui.elementBuilder("a", { href: "#" }, deleteImg);
+
+      const tdDeleteLink = ui.elementBuilder(
+        "td",
+        { class: "table-cell", type: "text" },
+        deleteLink
       );
+
       deleteLink.addEventListener("click", () => {
-        deleteContact(newContact.id);
+        app.setSelectedId(newContact.id);
+        console.log(app.selectedId, "selectedID");
+        deleteContact();
       });
 
       const trContact = ui.elementBuilder("tr", {}, [
@@ -228,16 +254,16 @@ class UI {
         tdName,
         tdPhone,
         tdEmail,
-        editLink,
-        deleteLink,
+        tdEditLink,
+        tdDeleteLink,
       ]);
 
-      trContact.innerHTML += `<a onclick="editContact(${newContact.id})" href="#" id="edit-btn_${newContact.id}">
-                    <img src="img/edit.png" alt="" style="height: 20px;"></img>
-                </a>`;
-      trContact.innerHTML += `<a onclick="deleteContact(${newContact.id})" href="#" id="delete-btn_${newContact.id}">
-                    <img src="img/delete.png" alt="" style="height: 20px;"></img>
-                </a>`;
+      // trContact.innerHTML += `<a onclick="editContact(${newContact.id})" href="#" id="edit-btn_${newContact.id}">
+      //               <img src="img/edit.png" alt="" style="height: 20px;"></img>
+      //           </a>`;
+      // trContact.innerHTML += `<a onclick="deleteContact(${newContact.id})" href="#" id="delete-btn_${newContact.id}">
+      //               <img src="img/delete.png" alt="" style="height: 20px;"></img>
+      //           </a>`;
 
       table.appendChild(trContact);
     });
@@ -255,29 +281,39 @@ class UI {
     const deleteSubmit = ui.elementBuilder("input", {
       type: "submit",
       id: "delete-submit",
-    });    
-    const modalFooter = ui.elementBuilder("div", { class: "modal-footer" }, deleteSubmit);
+    });
+    const modalFooter = ui.elementBuilder(
+      "div",
+      { class: "modal-footer" },
+      deleteSubmit
+    );
     const modalBody = ui.elementBuilder("div", { class: "modal-body" });
-    const closeModal = ui.elementBuilder("span", { class: "closeModal" }, "&times;");
+    const closeModal = ui.elementBuilder(
+      "span",
+      { class: "closeModal" },
+      "&times;"
+    );
     const deleteHeader = ui.elementBuilder("h2", { id: "delete-header" });
 
-    const modalHeader = ui.elementBuilder("div", { class: "modal-header" },[
+    const modalHeader = ui.elementBuilder("div", { class: "modal-header" }, [
       closeModal,
-      deleteHeader
+      deleteHeader,
     ]);
 
-    const ModalContent = ui.elementBuilder("div", { class: "modal-content" },[
+    const ModalContent = ui.elementBuilder("div", { class: "modal-content" }, [
       modalHeader,
       modalBody,
-      modalFooter
+      modalFooter,
     ]);
 
-    const deleteModalDiv = ui.elementBuilder("div", {
-      id: "deleteModal",
-      class: "modal",
-    }, [
-      ModalContent
-    ]);
+    const deleteModalDiv = ui.elementBuilder(
+      "div",
+      {
+        id: "deleteModal",
+        class: "modal",
+      },
+      [ModalContent]
+    );
     document.body.appendChild(deleteModalDiv);
   }
 }
@@ -287,10 +323,15 @@ const ui = new UI();
 class App {
   ui;
   table;
+  selectedId;
 
   constructor(UI) {
     this.ui = UI;
     this.getTable();
+  }
+
+  setSelectedId(id) {
+    this.selectedId = id;
   }
 
   getTable() {
@@ -311,4 +352,15 @@ app.initialize();
 // delete html and render all up in js, in body has to be <div>root</div>
 // refactor mentions
 // NOT LET, CONST!!!
-//
+// event listener vs onclick
+
+//!!! in new js file
+//renderHeader
+// renderForm
+
+// script = UI
+// (function(ui){
+
+
+
+}(window.UI)
