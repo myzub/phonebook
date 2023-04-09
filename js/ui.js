@@ -1,5 +1,5 @@
 class UI {
-  constructor() { }
+  constructor() {}
 
   root = document.getElementById("root");
 
@@ -53,11 +53,11 @@ class UI {
       placeholder: "search",
       onInput: "searchAny()", // TODO rewrite as eventListener
     });
-    const br = ui.elementBuilder("br", {},);
+    const br = ui.elementBuilder("br", {});
     const inputname = ui.elementBuilder("input", {
       type: "text",
-      name: "name1",
-      id: "name1",
+      name: "name",
+      id: "name",
       placeholder: "name",
       value: "",
     });
@@ -101,31 +101,28 @@ class UI {
   }
 
   renderTableHeader() {
-    const thId = ui.elementBuilder("th", {}, "id");
+    const thName = ui.elementBuilder("th", {}, "name");
     const thPhone = ui.elementBuilder("th", {}, "phone");
     const thEmail = ui.elementBuilder("th", {}, "email");
-    const tr = ui.elementBuilder("tr", {}, [thId, thPhone, thEmail]);
+    const tr = ui.elementBuilder("tr", {}, [thName, thPhone, thEmail]);
     const thead = ui.elementBuilder("thead", {}, [tr]);
     const tbody = ui.elementBuilder("tbody", { id: "tableList" });
-    const tableList = ui.elementBuilder("table", {}, [
-      thead,
-      tbody,
-    ]);
+    const tableList = ui.elementBuilder("table", {}, [thead, tbody]);
     document.body.appendChild(tableList);
   }
 
   renderTable(tableList, contacts) {
     tableList = document.getElementById("tableList");
     contacts.map((newContact) => {
-      const tdId = ui.elementBuilder(
-        "td",
-        { class: "table-cell", type: "text" },
-        newContact.id
-      );
+      // const tdId = ui.elementBuilder(
+      //   "td",
+      //   { class: "table-cell", type: "text" },
+      //   newContact.id
+      // );
       const tdName = ui.elementBuilder(
         "td",
         { class: "table-cell", type: "text" },
-        newContact.name1
+        newContact.name
       );
       const tdPhone = ui.elementBuilder(
         "td",
@@ -162,11 +159,10 @@ class UI {
       );
       deleteLink.addEventListener("click", () => {
         app.setSelectedId(newContact.id);
-        console.log(app.selectedId, "selectedID");
-        deleteContact();
+        deleteModal();
       });
       const trContact = ui.elementBuilder("tr", {}, [
-        tdId,
+        /*tdId,*/
         tdName,
         tdPhone,
         tdEmail,
@@ -184,14 +180,15 @@ class UI {
       "X"
     );
     const editHeader = ui.elementBuilder("h2", { id: "editHeader" });
-    const modalHeader = ui.elementBuilder("div", { id: "modalHeader", class: "modal-header" }, [
-      closeEditModalButton,
-      editHeader,
-    ]);
+    const modalHeader = ui.elementBuilder(
+      "div",
+      { id: "modalHeader", class: "modal-header" },
+      [closeEditModalButton, editHeader]
+    );
     const inputName = ui.elementBuilder("input", {
       type: "text",
-      name: "name1",
-      id: "editName1",
+      name: "name",
+      id: "editName",
       placeholder: "name",
       value: "",
     });
@@ -226,9 +223,11 @@ class UI {
       modalBody,
       modalFooter,
     ]);
-    const editModalDiv = ui.elementBuilder("div", { id: "editModalDiv", class: "modal" }, [
-      modalContent
-    ]);
+    const editModalDiv = ui.elementBuilder(
+      "div",
+      { id: "editModalDiv", class: "modal" },
+      [modalContent]
+    );
     document.body.appendChild(editModalDiv);
   }
 
