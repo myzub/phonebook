@@ -15,89 +15,87 @@ class App {
     this.selectedId = id;
   }
 
-  fetchContacts() {
-    this.api.getAllContacts({
-      onSuccess: (response) => {
-        this.contacts = response.data;
-        document.querySelector("#tableList").innerHTML = "";
-        this.windowUI.renderTable(this.table, app.contacts);
-      },
-      onError: (response) =>
-        console.log(new Error(`Error fetching Contact List! \n ${response}`)),
-    });
+  async fetchContacts() {
+    try {
+      const response = await this.api.getAllContacts();
+      const contacts = await response.json();
+      this.contacts = contacts.data;
+      document.querySelector("#tableList").innerHTML = "";
+      this.windowUI.renderTable(this.table, app.contacts);
+    } catch (e) {
+      console.log(`Error fetching Contact List! \n exception: ${e}`);
+    }
   }
 
-  fetchOneContact(contactId) {
-    this.api.getContactById(contactId, {
-      onSuccess: (response) => {
-        app.OneContact = response.data;
-        console.log(app.OneContact + " request");
+  async fetchOneContact(contactId) {
+    try {
+      const response = await this.api.getContactById(contactId);
+      const contacts = await response.json();
 
-        editModalDiv.style.display = "block";
-        document.getElementById(
-          "editHeader"
-        ).innerText = `Edit  ${app.OneContact.name} contact?`;
+      app.OneContact = contacts.data;
+      console.log(app.OneContact + " request");
 
-        let editSubmit = document.getElementById("editSubmit");
-        let editName = document.getElementById("editName");
-        let editPhone = document.getElementById("editPhone");
-        let editEmail = document.getElementById("editEmail");
+      editModalDiv.style.display = "block";
+      document.getElementById(
+        "editHeader"
+      ).innerText = `Edit  ${app.OneContact.name} contact?`;
 
-        editName.value = app.OneContact.name;
-        editPhone.value = app.OneContact.phone;
-        editEmail.value = app.OneContact.email;
+      let editSubmit = document.getElementById("editSubmit");
+      let editName = document.getElementById("editName");
+      let editPhone = document.getElementById("editPhone");
+      let editEmail = document.getElementById("editEmail");
 
-        let editedContact = app.OneContact;
+      editName.value = app.OneContact.name;
+      editPhone.value = app.OneContact.phone;
+      editEmail.value = app.OneContact.email;
 
-        editSubmit.addEventListener("click", function eventHandler() {
-          editModalDiv.style.display = "none";
+      let editedContact = app.OneContact;
 
-          editedContact.name = editName.value;
-          editedContact.phone = editPhone.value;
-          editedContact.email = editEmail.value;
+      editSubmit.addEventListener("click", function eventHandler() {
+        editModalDiv.style.display = "none";
 
-          app.updateContactById(editedContact);
+        editedContact.name = editName.value;
+        editedContact.phone = editPhone.value;
+        editedContact.email = editEmail.value;
 
-          editSubmit.removeEventListener("click", eventHandler);
-        });
-      },
-      onError: (response) =>
-        console.log(new Error(`Error fetching one Contact! \n ${response}`)),
-    });
+        app.updateContactById(editedContact);
+
+        editSubmit.removeEventListener("click", eventHandler);
+      });
+    } catch (e) {
+      console.log(new Error(`Error fetching one Contact! \n ${e}`));
+    }
   }
 
-  postContact(newContact) {
-    this.api.postNewContact(newContact, {
-      onSuccess: () => {
-        console.log(`Contact ${newContact.name} is posted successfully!`);
-        app.fetchContacts();
-      },
-      onError: (response) =>
-        console.log(new Error(`"Error posting new Contact! \n ${response}`)),
-    });
+  async postContact(newContact) {
+    try {
+      const response = await this.api.postNewContact(newContact);
+      console.log(`Contact ${newContact.name} is posted successfully!`);
+      await app.fetchContacts();
+    } catch (e) {
+      console.log(new Error(`"Error posting new Contact! \n ${e}`));
+    }
   }
 
-  updateContactById(contactId) {
-    this.api.updateContact(contactId, {
-      onSuccess: () => {
-        console.log(`Contact ${contactId} is updated successfully!`);
-        document.querySelector("#tableList").innerHTML = "";
-        app.fetchContacts();
-      },
-      onError: (response) =>
-        console.log(new Error(`"Error deleting new Contact! \n ${response}`)),
-    });
+  async updateContactById(contactId) {
+    try {
+      const response = await zthis.api.updateContact(contactId);
+      console.log(`Contact ${contactId} is updated successfully!`);
+      document.querySelector("#tableList").innerHTML = "";
+      await app.fetchContacts();
+    } catch (e) {
+      console.log(new Error(`"Error deleting new Contact! \n ${e}`));
+    }
   }
 
-  deleteContactById(contactId) {
-    this.api.deleteContact(contactId, {
-      onSuccess: () => {
-        console.log(`Contact ${contactId} is deleted successfully!`);
-        app.fetchContacts();
-      },
-      onError: (response) =>
-        console.log(new Error(`"Error deleting new Contact! \n ${response}`)),
-    });
+  async deleteContactById(contactId) {
+    try {
+      const response = await this.api.deleteContact(contactId);
+      console.log(`Contact ${contactId} is deleted successfully!`);
+      await app.fetchContacts();
+    } catch (e) {
+      console.log(new Error(`"Error deleting new Contact! \n ${e}`));
+    }
   }
 
   initialize() {
