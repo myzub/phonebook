@@ -79,7 +79,7 @@ class App {
 
   async updateContactById(contactId) {
     try {
-      const response = await zthis.api.updateContact(contactId);
+      const response = await this.api.updateContact(contactId);
       console.log(`Contact ${contactId} is updated successfully!`);
       document.querySelector("#tableList").innerHTML = "";
       await app.fetchContacts();
